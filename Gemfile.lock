@@ -1,0 +1,14 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    highline (1.6.15)
+    httpclient (2.3.2)
+    rally_api (0.9.1)
+      httpclient (>= 2.2.4)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  highline
+  rally_api
