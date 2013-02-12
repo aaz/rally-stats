@@ -1,5 +1,5 @@
 # Strip out lines with NA fields from the CSV:
-#   ruby -ne 'print unless /,,/' stories.csv > complete.csv
+#   ruby -ne 'print unless /,,/' stats.csv > complete.csv
 
 # as.numeric(df$Cycle.Time)
 # levels(df$Size)
@@ -14,9 +14,10 @@ plot.cycle.times <- function(csv.file = "complete.csv") {
   df$Accepted <- strptime(df$Accepted, format="%Y-%m-%dT%H:%M:%S")
   df$Story <- as.character(df$Story)
   df$Size <- as.factor(df$Size)
+  df$Blocked.Time <- round(df$Blocked.Time / 24.0, digits=1)
 
   cycle.time <- difftime(df[,4], df[,3], units="days")
-  df$Cycle.Time <- cycle.time
+  df$Cycle.Time <- cycle.time # - df$Blocked.Time
   df$Cycle.Time <- round(df$Cycle.Time, digits=1)
 
   pdf(file="cycle_times.pdf")
