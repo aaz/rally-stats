@@ -6,7 +6,7 @@
 # table(df$Size)
 
 
-plot.cycle.times <- function(csv.file = "complete.csv") {
+cycle.times <- function(csv.file = "complete.csv") {
   df <- read.csv("complete.csv")
 
   df$In.Progress <- strptime(df$In.Progress, format="%Y-%m-%dT%H:%M:%S")
@@ -14,15 +14,18 @@ plot.cycle.times <- function(csv.file = "complete.csv") {
   df$Accepted <- strptime(df$Accepted, format="%Y-%m-%dT%H:%M:%S")
   df$Story <- as.character(df$Story)
   df$Size <- as.factor(df$Size)
-  df$Blocked.Time <- round(df$Blocked.Time / 24.0, digits=1)
+  df$Cycle.Time.Days <- round(df$Cycle.Time / 24.0, digits=1)
 
-  cycle.time <- difftime(df[,4], df[,3], units="days")
-  df$Cycle.Time <- cycle.time # - df$Blocked.Time
-  df$Cycle.Time <- round(df$Cycle.Time, digits=1)
+# cycle.time <- difftime(df[,4], df[,3], units="days")
+# df$Cycle.Time <- cycle.time # - df$Blocked.Time
+# df$Cycle.Time <- round(df$Cycle.Time, digits=1)
 
-  pdf(file="cycle_times.pdf")
-
-  boxplot(as.numeric(Cycle.Time) ~ Size, data=df, ylab="Cycle Time (days)", xlab="Story Point Size", main="Cycle Time Variation for Story Sizes", varwidth=T)
+  return(df)
 }
 
-plot.cycle.times()
+plot.cycle.times <- function(df) {
+
+  # pdf(file="cycle_times.pdf")
+
+  boxplot(as.numeric(Cycle.Time.Days) ~ Size, data=df, ylab="Cycle Time (days)", xlab="Story Point Size", main="Cycle Time Variation for Story Sizes", varwidth=T)
+}

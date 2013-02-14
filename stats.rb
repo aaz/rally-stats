@@ -1,6 +1,6 @@
 require 'highline'
 require 'rally_api'
-require 'time_diff'
+require 'timer'
 require 'yaml'
 
 include RallyAPI
@@ -9,7 +9,7 @@ STATE_CHANGE = /SCHEDULE STATE changed from \[.*?\] to \[(.*?)\]/
 BLOCK_UNBLOCK = /BLOCKED changed from \[.+?\] to \[(.+?)\]/
 TIMESTAMP_SUFFIX = /\.[0-9]+Z$/
 ID_IN_JSON_URL = /\/([0-9]+)\.js/
-HEADINGS = ['Story', 'Size', 'In-Progress', 'Completed', 'Accepted', 'Blocked-Time']
+HEADINGS = ['Story', 'Size', 'In-Progress', 'Completed', 'Accepted', 'Cycle-Time']
 
 config = YAML.load_file "config.yaml"
 
@@ -35,34 +35,6 @@ end
 def ref_to_id(ref)
   id = ID_IN_JSON_URL.match(ref)
   id[1].to_s.to_i
-end
-
-def blocked_time(timeline)
-  total = 0.0
-  timing = false
-  last_timestamp = nil
-
-  timeline.each do |rev|
-    if (timing) then
-      if (rev.include? 'Unblocked') then
-        elapsed = Time.diff(rev[0], last_timestamp, '%m')[:diff].to_i
-        total += elapsed
-        timing = false
-      elsif (rev.include? 'Completed') then
-        elapsed = Time.diff(rev[0], last_timestamp, '%m')[:diff].to_i
-        total += elapsed
-        timing = false
-        break
-      end
-    else # Not timing
-      if (rev.include? 'Blocked') then
-        last_timestamp = rev[0]
-        timing = true
-      end
-    end
-  end
-
-  return (total / 60.0).round(1) # Convert from minutes to hours
 end
 
 accepted_story_ids = find_all_accepted_stories(rally)
@@ -97,6 +69,6 @@ accepted_story_ids.each do |id|
     end
     timeline.push(revision) unless (revision.size == 1)
   end
-  row[HEADINGS.rindex('Blocked-Time')] = blocked_time(timeline)
+  row[HEADINGS.rindex('Cycle-Time')] = cycle_time(timeline)
   puts row.join(',')
 end
