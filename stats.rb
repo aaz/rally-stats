@@ -9,7 +9,7 @@ STATE_CHANGE = /SCHEDULE STATE changed from \[.*?\] to \[(.*?)\]/
 BLOCK_UNBLOCK = /BLOCKED changed from \[.+?\] to \[(.+?)\]/
 TIMESTAMP_SUFFIX = /\.[0-9]+Z$/
 ID_IN_JSON_URL = /\/([0-9]+)\.js/
-HEADINGS = ['Story', 'Size', 'In-Progress', 'Completed', 'Accepted', 'Cycle-Time']
+HEADINGS = ['Story', 'Estimate', 'In-Progress', 'Completed', 'Accepted', 'Cycle-Time']
 
 config = YAML.load_file "config.yaml"
 
@@ -46,8 +46,8 @@ accepted_story_ids.each do |id|
   next unless (story["ScheduleState"] == "Accepted" && story["Children"].size == 0)
 
   story_ref = story["FormattedID"]
-  story_size = story["PlanEstimate"]
-  row = Array.new [story_ref, story_size, nil, nil, nil, 0.0]
+  estimate = story["PlanEstimate"]
+  row = Array.new [story_ref, estimate, nil, nil, nil, 0.0]
 
   history = story["RevisionHistory"]
   rh_id = ref_to_id(history.getref)
