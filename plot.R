@@ -24,4 +24,6 @@ plot.cycle.times <- function(df, ...) {
   pdf(file="cycle_times.pdf")
 
   boxplot(as.numeric(Cycle.Time.Days) ~ Size, data=df, ylab="Cycle Time (days)", xlab="Story Point Size", main="Cycle Time Variation for Story Sizes", varwidth=T, ...)
+
+  dev.off()
 }
