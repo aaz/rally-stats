@@ -69,6 +69,10 @@ accepted_story_ids.each do |id|
     end
     timeline.push(revision) unless (revision.size == 1)
   end
-  row[HEADINGS.rindex('Cycle-Time')] = cycle_time(timeline)
+
+  # Not all stories have a sufficient timeline, i.e. one with In-Progress and Completed events
+  if ((timeline.rassoc('In-Progress') != nil) && (timeline.rassoc('Completed') != nil)) then
+    row[HEADINGS.rindex('Cycle-Time')] = cycle_time(timeline)
+  end
   puts row.join(',')
 end

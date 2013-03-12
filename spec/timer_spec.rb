@@ -1,7 +1,17 @@
-require 'time_diff'
 require 'timer'
 
 describe 'Timer' do
+  describe 'with a weekend between In-Progress and Complete' do
+    friday = "2013-03-01T10:00:00"
+    wednesday = "2013-03-06T10:00:00"
+    timeline = [
+      [friday, 'In-Progress'],
+      [wednesday, 'Completed']
+    ]
+    it 'should exclude the weekend from cycle time' do
+      cycle_time(timeline).should eql 72.0
+    end
+  end
   describe 'with simple In-Progress -> Complete timeline' do
     timeline = [
       ["2012-02-13T16:15:49", 'In-Progress'],
